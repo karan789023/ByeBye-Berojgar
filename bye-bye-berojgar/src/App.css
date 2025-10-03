@@ -1,0 +1,77 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Global: prevent default browser double-tap zoom in many cases */
+html, body {
+  touch-action: manipulation; /* allows panning/tapping but reduces double-tap zoom */
+  -ms-touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; /* prevents accidental text selection on double-tap (optional) */
+  user-select: none; /* optional: only if you don't need selectable text */
+}
+
+/* If you need selectable text (recommended for accessibility), avoid user-select:none 
+   and instead apply it only to buttons/interactive elements. */
+
+/* Disable zoom gestures on specific interactive containers (safer than global) */
+.no-zoom {
+  touch-action: pan-x pan-y; /* allow panning but not pinch-zoom */
+}
+
+/* Make buttons and inputs still selectable/touchable */
+button, input, textarea, select, a {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Optional: make layout scale-friendly so users don't need zoom */
+body {
+  font-size: 16px; /* base font size to avoid small text that users try to zoom */
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;  /* left-right scroll disable */
+}

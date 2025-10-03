@@ -1,0 +1,191 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.testmaker-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 500px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fdfdfd;
+}
+
+.testmaker-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.testmaker-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.testmaker-container label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.testmaker-container select,
+.testmaker-container input {
+  margin-bottom: 15px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.testmaker-container button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #e0e0e0;
+  transition: background-color 0.3s;
+}
+
+.testmaker-container button:hover {
+  background-color: #d5d5d5;
+}
+
+.adminhome-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.adminhome-container h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.adminhome-container p {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: #555;
+}
+
+.adminhome-container .admin-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.adminhome-container button {
+  padding: 12px 20px;
+  width: 250px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.adminhome-container button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Background & Font */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+/* Container */
+.adminhome-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* Heading */
+.adminhome-container h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.adminhome-container p {
+  font-size: 16px;
+  margin-bottom: 40px;
+  color: #666;
+}
+
+/* Buttons as Cards */
+.admin-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.admin-buttons button {
+  padding: 20px 25px;
+  width: 180px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #6a11cb, #2575fc);
+  color: #fff;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.admin-buttons button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+  background: linear-gradient(145deg, #2575fc, #6a11cb);
+}

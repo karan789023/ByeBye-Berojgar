@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Background & Font */
+body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:0; }
+.container { padding:20px; max-width:1000px; margin:0 auto; }
+input, select, textarea { padding:6px; margin:6px 0; width:100%; box-sizing:border-box; }
+button { padding:8px 12px; margin:6px 6px 6px 0; cursor:pointer; }
+.card { border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:10px; }
+
+/* src/Pages/ModelTraining/ModelTraining.css */
+.mt-container {
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+.mt-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+}
+
+.mt-card label {
+  display: block;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.mt-card input,
+.mt-card select,
+.mt-card textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.mt-file-upload {
+  margin-top: 8px;
+}
+
+.mt-buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.mt-buttons button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.mt-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.mt-text {
+  white-space: pre-wrap;
+  margin-top: 6px;
+}
