@@ -1,4 +1,6 @@
 
+import { Link } from "react-router-dom";
+
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
@@ -91,9 +93,11 @@ export default function ByeByeBerojgarHome() {
             <button className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-slate-100">
               <GraduationCap className="w-4 h-4 text-yellow-500" /> Tests
             </button>
-            <button className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-slate-100">
-              <Landmark className="w-4 h-4 text-green-500" /> Government
-            </button>
+          <Link to="/Goverment">
+  <button className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-slate-100">
+    <Landmark className="w-4 h-4 text-green-500" /> Goverment
+  </button>
+</Link>
             <button className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-slate-100">
               <Code className="w-4 h-4 text-pink-500" /> Competitive
             </button>
@@ -111,13 +115,16 @@ export default function ByeByeBerojgarHome() {
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             </div>
             <div className="flex items-center gap-2">
-              <button
-                className="px-4 py-2 rounded-lg bg-sky-600 text-white font-medium shadow hover:brightness-95"
-                onClick={() => alert("Create account - coming soon")}
-              >
-                Sign Up
-              </button>
+              
+         <Link
+  to="/sighnin"
+  className="px-4 py-2 rounded-lg bg-sky-600 text-white font-medium shadow hover:brightness-95"
+>
+  Sign Up
+</Link>         
+               <Link to="/sighnin">
               <button className="px-3 py-2 rounded-lg border border-slate-200">Log in</button>
+              </Link>
             </div>
           </div>
 
@@ -263,12 +270,23 @@ export default function ByeByeBerojgarHome() {
         <section className="mt-12">
           <h3 className="text-2xl font-semibold">Browse by Category</h3>
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-            <CategoryCard title="Govt Exams" icon={<Landmark />} color="from-green-400 to-green-600" />
+            <Link to="/Goverment">
+    <CategoryCard title="Govt Exams" icon={<Landmark />} color="from-green-400 to-green-600" />
+  </Link>
+            <Link to="/Jee">
             <CategoryCard title="JEE" icon={<Code />} color="from-pink-400 to-pink-600" />
+            </Link>
+
+            <Link to="/Neet">
             <CategoryCard title="NEET" icon={<BookOpen />} color="from-sky-400 to-sky-600" />
+            </Link>
             <CategoryCard title="Coding" icon={<Code />} color="from-purple-400 to-purple-600" />
+            <Link to="/Goverment">
             <CategoryCard title="Banking" icon={<GraduationCap />} color="from-yellow-400 to-yellow-600" />
+            </Link>
+            <Link to="/Goverment">
             <CategoryCard title="State Exams" icon={<MapPin />} color="from-indigo-400 to-indigo-600" />
+            </Link>
           </div>
         </section>
 

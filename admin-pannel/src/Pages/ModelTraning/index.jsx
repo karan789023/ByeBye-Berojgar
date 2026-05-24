@@ -1,7 +1,5 @@
 // src/Pages/ModelTraining/index.jsx
 import React, { useState, useEffect } from 'react';
-import { uploadPYQ, getPYQs } from '../api';
-
 
 export default function ModelTraining() {
   const [examCategory, setExamCategory] = useState('SSC');

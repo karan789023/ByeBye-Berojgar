@@ -182,33 +182,42 @@ export default function AnalysisPage() {
           </button>
         </div>
 
-        {/* Questions List */}
-        <div className="space-y-4">
-          {questionData[selectedTab].map((q) => (
-            <div
-              key={q.id}
-              className="border rounded-xl p-4 shadow-sm hover:shadow-md transition"
-            >
-              <p className="font-medium mb-3">
-                Q{q.id}. {q.question}
-              </p>
-              <div className="space-y-2">
-                {q.options.map((opt, i) => (
-                  <div
-                    key={i}
-                    className={`p-2 rounded-lg border ${
-                      opt === q.correct
-                        ? "border-green-500 bg-green-50"
-                        : "border-gray-200"
-                    }`}
-                  >
-                    {opt}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+{/* Questions List */}
+<div className="space-y-4">
+  {questionData[selectedTab].map((q) => (
+    <div
+      key={q.id}
+      className="border rounded-xl p-4 shadow-sm hover:shadow-md transition"
+    >
+      <p className="font-medium mb-3">
+        Q{q.id}. {q.question}
+      </p>
+
+      <div className="space-y-2">
+        {q.options.map((opt, i) => (
+          <div
+            key={i}
+            className={`p-2 rounded-lg border ${
+              opt === q.correct
+                ? "border-green-500 bg-green-50"
+                : "border-gray-200"
+            }`}
+          >
+            {opt}
+          </div>
+        ))}
+
+        {/* ⭐ EXPLANATION BOX (Add this only) */}
+        {q.explanation && (
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+            💡 <span className="font-semibold">Explanation:</span> {q.explanation}
+          </div>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
       </div>
     </div>
   );

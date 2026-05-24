@@ -1,18 +1,26 @@
-import axios from 'axios';
-const API = axios.create({ baseURL: 'http://localhost:5000/api' });
+import axios from "axios";
 
-export const createTest = (data) => API.post('/tests/create', data);
-export const getTests = (params) => API.get('/tests', { params });
 
-export const uploadPYQ = (data, isFile = false) => {
-  if (isFile) {
-    // data is FormData
-    return API.post('/pyq/upload', data, { headers: { 'Content-Type': 'multipart/form-data' }});
-  } else {
-    return API.post('/pyq/upload', data);
+const API = axios.create({
+  baseURL: "http://localhost:5000/api/tests",
+});
+
+export const createTest = async (data) => {
+  try {
+    const res = await API.post("/create", data);
+    return res.data;
+  } catch (err) {
+    console.error("API ERROR:", err.response?.data || err.message);
+    throw new Error(err.response?.data?.message || "API Request Failed");
   }
 };
 
-export const getPYQs = (params) => API.get('/pyq', { params });
-
-export default API;
+export const getTests = async () => {
+  try {
+    const res = await API.get("/");
+    return res.data;
+  } catch (err) {
+    console.error("API ERROR:", err.response?.data || err.message);
+    throw new Error("Could not load tests");
+  }
+};

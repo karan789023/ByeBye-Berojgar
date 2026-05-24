@@ -6,11 +6,7 @@ const path = require('path');
 
 const upload = multer({ dest: path.join(__dirname, '../uploads/') });
 
-/**
- * Note: This file exports two handlers:
- * - uploadFileMiddleware: multer middleware to accept file upload
- * - uploadPYQ: main logic to read extracted text (or uploaded file) and save
- */
+
 
 exports.uploadFileMiddleware = upload.single('file');
 

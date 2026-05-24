@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Generic exam logo
 const genericLogo = "https://img.icons8.com/color/48/000000/test-passed.png";
@@ -700,9 +701,10 @@ const ExamPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredExams.length > 0 ? (
           filteredExams.map((exam, index) => (
-            <div
+            <Link
+              to="/TestPage"
               key={exam}
-              className="bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300"
+              className="bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
             >
               <div className="bg-blue-100 rounded-full p-4 mb-4 flex items-center justify-center w-16 h-16">
                 <img
@@ -717,12 +719,13 @@ const ExamPage = () => {
               <p className="text-sm text-gray-500">
                 {1000 - index} tests available
               </p>
+
               {selectedTestType && (
                 <p className="mt-1 text-xs text-blue-600 font-semibold">
                   {selectedTestType}
                 </p>
               )}
-            </div>
+            </Link>
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500">
@@ -735,4 +738,3 @@ const ExamPage = () => {
 };
 
 export default ExamPage;
-

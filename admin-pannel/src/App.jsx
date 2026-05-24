@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./Pages/Home";
 import TestMaker from "./Pages/TestMaker";
 import ModelTraining from "./Pages/modelTraning";
 

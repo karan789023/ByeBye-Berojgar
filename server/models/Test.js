@@ -1,22 +1,23 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const QuestionSchema = new mongoose.Schema({
+const questionSchema = new mongoose.Schema({
   question: String,
   options: [String],
   answer: String,
   explanation: String,
 });
 
-const TestSchema = new mongoose.Schema({
+const testSchema = new mongoose.Schema({
   title: String,
   category: String,
   exam: String,
   state: String,
-  isFullTest: { type: Boolean, default: false },
+  subject: String,
   numQuestions: Number,
-  questions: [QuestionSchema],
-  createdBy: String,
-  createdAt: { type: Date, default: Date.now }
-});
+  isFullTest: Boolean,
+  questions: [questionSchema],
+}, { timestamps: true });
 
-module.exports = mongoose.model('Test', TestSchema);
+const Test = mongoose.model("Test", testSchema);
+
+export default Test;

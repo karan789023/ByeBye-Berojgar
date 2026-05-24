@@ -1,43 +1,52 @@
-import React, { useState } from 'react';
-import { createTest, getTests } from '../api';
+import React, { useState } from "react";
+import { createTest } from "../api";
 
-const categories = ['Government','JEE','NEET','Coding'];
-const states = ['All States','UP','Delhi','Maharashtra','Bihar','West Bengal'];
+const examTypes = ["Government", "JEE", "NEET", "Coding"];
 
-export default function TestMaker(){
-  const [category, setCategory] = useState('');
-  const [exam, setExam] = useState('');
-  const [state, setState] = useState('All States');
+const indianStates = [
+  "Uttar Pradesh", "Bihar", "Maharashtra", "Gujarat", "Rajasthan",
+  "Madhya Pradesh", "Tamil Nadu", "Karnataka", "Punjab", "Delhi"
+];
+
+const jeeSubjects = ["Physics", "Chemistry", "Math"];
+const neetSubjects = ["Physics", "Chemistry", "Biology"];
+
+export default function TestMaker() {
+  const [examType, setExamType] = useState("");
+  const [subject, setSubject] = useState("");
+  const [state, setState] = useState("");
+  const [testMode, setTestMode] = useState("");
+  const [testCount, setTestCount] = useState(1);
   const [numQuestions, setNumQuestions] = useState(10);
-  const [isFullTest, setIsFullTest] = useState(false);
+
   const [loading, setLoading] = useState(false);
-  const [tests, setTests] = useState([]);
 
   const handleGenerate = async () => {
-    if (!category || !exam || !numQuestions) { alert('Fill category, exam and numQuestions'); return; }
-    setLoading(true);
-    try {
-      const { data } = await createTest({
-        category, exam, state: state === 'All States' ? '' : state,
-        numQuestions, isFullTest
-      });
-      alert('Test generated & saved!');
-      setTests(prev => [data.test, ...prev]);
-    } catch (err) {
-      console.error(err);
-      alert('Error: ' + (err?.response?.data?.message || err.message));
+    if (!examType || !testMode || !numQuestions) {
+      alert("Please fill all fields");
+      return;
     }
-    setLoading(false);
-  };
 
-  const handleSearch = async () => {
+    setLoading(true);
+
     try {
-      const { data } = await getTests({ category, exam, state: state === 'All States' ? '' : state });
-      setTests(data);
+      for (let i = 0; i < testCount; i++) {
+        await createTest({
+          category: examType,
+          exam: examType,
+          state,
+          subject,
+          numQuestions,
+          isFullTest: testMode === "Full Test"
+        });
+      }
+
+      alert("All tests generated successfully!");
     } catch (err) {
-      console.error(err);
-      alert('Fetch failed');
+      alert("Error: " + err.message);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -45,52 +54,77 @@ export default function TestMaker(){
       <h2>Admin — Test Maker</h2>
 
       <div className="card">
-        <label>Category</label>
-        <select value={category} onChange={e => setCategory(e.target.value)}>
+
+        <label>Exam Type</label>
+        <select value={examType} onChange={(e) => setExamType(e.target.value)}>
           <option value="">--Select--</option>
-          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          {examTypes.map((e) => (
+            <option key={e}>{e}</option>
+          ))}
         </select>
 
-        <label>Exam (search/type)</label>
-        <input value={exam} onChange={e => setExam(e.target.value)} placeholder="e.g. SSC CGL, JEE Main"/>
+        {examType === "Government" && (
+          <>
+            <label>State</label>
+            <select value={state} onChange={(e) => setState(e.target.value)}>
+              <option value="">--Select State--</option>
+              {indianStates.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+          </>
+        )}
 
-        <button onClick={handleSearch}>🔍 Search Tests</button>
+        {examType === "JEE" && (
+          <>
+            <label>Subject</label>
+            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
+              <option value="">--Select Subject--</option>
+              {jeeSubjects.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+          </>
+        )}
 
-        <label>State (for Govt)</label>
-        <select value={state} onChange={e=>setState(e.target.value)}>
-          {states.map(s => <option key={s} value={s}>{s}</option>)}
+        {examType === "NEET" && (
+          <>
+            <label>Subject</label>
+            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
+              <option value="">--Select--</option>
+              {neetSubjects.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+          </>
+        )}
+
+        <label>Test Mode</label>
+        <select value={testMode} onChange={(e) => setTestMode(e.target.value)}>
+          <option value="">--Select--</option>
+          <option>Full Test</option>
+          <option>Half Test</option>
         </select>
 
-        <label>Full Test?</label>
-        <input type="checkbox" checked={isFullTest} onChange={e => setIsFullTest(e.target.checked)} />
+        <label>How Many Tests?</label>
+        <input
+          type="number"
+          min={1}
+          value={testCount}
+          onChange={(e) => setTestCount(Number(e.target.value))}
+        />
 
         <label>Number of Questions</label>
-        <input type="number" min={1} value={numQuestions} onChange={e => setNumQuestions(Number(e.target.value))}/>
+        <input
+          type="number"
+          min={1}
+          value={numQuestions}
+          onChange={(e) => setNumQuestions(Number(e.target.value))}
+        />
 
-        <div style={{marginTop:8}}>
-          <button onClick={handleGenerate} disabled={loading}>{loading ? 'Generating...' : 'Generate & Save Test'}</button>
-        </div>
-      </div>
-
-      <div>
-        <h3>Generated Tests</h3>
-        {tests.length === 0 ? <p>No tests found</p> : tests.map(t => (
-          <div key={t._id} className="card">
-            <b>{t.title}</b><br/>
-            <small>{t.exam} — {t.category} {t.state ? `(${t.state})` : ''}</small>
-            <div>Questions: {t.questions?.length}</div>
-            <ol>
-              {t.questions?.map((q, i) => (
-                <li key={i}>
-                  <div><b>Q:</b> {q.question}</div>
-                  {q.options?.length>0 && <ul>{q.options.map((o,idx)=>(<li key={idx}>{o}</li>))}</ul>}
-                  <div><i>Answer:</i> {q.answer}</div>
-                  <div><small>{q.explanation}</small></div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ))}
+        <button onClick={handleGenerate} disabled={loading}>
+          {loading ? "Generating..." : "Generate Test"}
+        </button>
       </div>
     </div>
   );

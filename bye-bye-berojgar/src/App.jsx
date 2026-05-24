@@ -9,6 +9,8 @@ import Skills from "./pages/skills";
 import Sighnin from "./pages/Sighnin";
 import Sighnup from "./pages/Sighnup";
 import Testpage from "./pages/Testpage";
+import Govt from "./pages/Govt";
+
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
          <Route path="Skills" element={<Skills />} />
          <Route path="Sighnin" element={<Sighnin />} />
          <Route path="Sighnup" element={<Sighnup />} />
-         <Route path="Testpage" element={<Testpage />} />
+         <Route path="/test/:id" element={<Testpage />} />
+
+         <Route path="Govt" element={<Govt />} />
       </Routes>
     </Router>
   );

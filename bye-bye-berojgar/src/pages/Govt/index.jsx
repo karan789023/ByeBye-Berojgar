@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-
 
 // NEET-specific test types
 const neetTests = [
@@ -21,30 +19,8 @@ const neetTests = [
     description: "Short practice test for quick revision",
     icon: "https://i.ibb.co/gMFtT8p7/full-test.png",
   },
-  {
-    type: "Physics Test",
-    duration: "1 hour",
-    questions: 50,
-    Test: 1400,
-    description: "Topic-wise physics practice",
-    icon: "https://i.ibb.co/1SChh6B/physics.png",
-  },
-  {
-    type: "Chemistry Test",
-    duration: "1 hour",
-    questions: 50,
-    Test: 1200,
-    description: "Topic-wise chemistry practice",
-    icon: "https://i.ibb.co/j03bNGz/chemistry.png",
-  },
-  {
-    type: "Biology Test",
-    duration: "1 hour",
-    questions: 90,
-    Test: 1100,
-    description: "Topic-wise biology practice",
-    icon: "https://i.ibb.co/yn8QRVQP/biology.png",
-  },
+  
+  
 ];
 
 const NeetTestPage = () => {
@@ -83,3 +59,4 @@ const NeetTestPage = () => {
 };
 
 export default NeetTestPage;
+

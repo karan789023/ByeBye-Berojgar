@@ -1,85 +1,30 @@
-import React, { useState } from "react";
-
-// JEE test types
-const jeeTests = {
-  "JEE Main": [
-    {
-      type: "Full-Length Test",
-      duration: "3 hours",
-      questions: 90,
-      description: "Complete JEE Main pattern test covering all subjects",
-      icon: "https://img.icons8.com/color/48/000000/stopwatch.png",
-    },
-    {
-      type: "Mock Test (30 Questions)",
-      duration: "45 minutes",
-      questions: 30,
-      description: "Short practice test for quick revision",
-      icon: "https://img.icons8.com/color/48/000000/quiz.png",
-    },
-    {
-      type: "Physics Test",
-      duration: "1 hour",
-      questions: 30,
-      description: "Topic-wise physics practice",
-      icon: "https://img.icons8.com/color/48/000000/physics.png",
-    },
-    {
-      type: "Chemistry Test",
-      duration: "1 hour",
-      questions: 30,
-      description: "Topic-wise chemistry practice",
-      icon: "https://img.icons8.com/color/48/000000/chemistry.png",
-    },
-    {
-      type: "Mathematics Test",
-      duration: "1 hour",
-      questions: 30,
-      description: "Topic-wise mathematics practice",
-      icon: "https://img.icons8.com/color/48/000000/math.png",
-    },
-  ],
-  "JEE Advanced": [
-    {
-      type: "Full-Length Test",
-      duration: "3 hours",
-      questions: 54,
-      description: "Complete JEE Advanced pattern test covering all subjects",
-      icon: "https://img.icons8.com/color/48/000000/stopwatch.png",
-    },
-    {
-      type: "Mock Test (20 Questions)",
-      duration: "40 minutes",
-      questions: 20,
-      description: "Short practice test for quick revision",
-      icon: "https://img.icons8.com/color/48/000000/quiz.png",
-    },
-    {
-      type: "Physics Test",
-      duration: "1 hour",
-      questions: 18,
-      description: "Topic-wise physics practice",
-      icon: "https://img.icons8.com/color/48/000000/physics.png",
-    },
-    {
-      type: "Chemistry Test",
-      duration: "1 hour",
-      questions: 18,
-      description: "Topic-wise chemistry practice",
-      icon: "https://png.pngtree.com/png-vector/20231019/ourlarge/pngtree-the-chemical-molecule-png-image_10252966.png  ",
-    },
-    {
-      type: "Mathematics Test",
-      duration: "1 hour",
-      questions: 18,
-      description: "Topic-wise mathematics practice",
-      icon: "https://img.icons8.com/color/48/000000/math.png",
-    },
-  ],
-};
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const JeeTestPage = () => {
+  const [allTests, setAllTests] = useState([]);
   const [selectedExam, setSelectedExam] = useState("");
+
+  // Step 1: Fetch all tests having category "JEE"
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/tests?category=JEE");
+        setAllTests(res.data);
+      } catch (error) {
+        console.log("Error fetching JEE tests:", error);
+      }
+    };
+
+    fetchTests();
+  }, []);
+
+  // Step 2: Extract JEE Main & Advanced automatically from DB
+  const jeeExams = [...new Set(allTests.map((t) => t.exam))];
+
+  // Step 3: Filter test types based on selected exam
+  const selectedExamTests = allTests.filter((t) => t.exam === selectedExam);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-6">
@@ -87,10 +32,10 @@ const JeeTestPage = () => {
         JEE Preparation - Select Exam
       </h1>
 
-      {/* Exam Selection */}
+      {/* Step A — Exam Selection */}
       {!selectedExam && (
         <div className="flex justify-center gap-6 mb-10 flex-wrap">
-          {Object.keys(jeeTests).map((exam) => (
+          {jeeExams.map((exam) => (
             <div
               key={exam}
               className="bg-white shadow-lg rounded-xl p-6 w-64 text-center cursor-pointer hover:shadow-2xl transition-shadow duration-300"
@@ -108,7 +53,7 @@ const JeeTestPage = () => {
         </div>
       )}
 
-      {/* Test Types Section */}
+      {/* Step B — Test Types */}
       {selectedExam && (
         <div>
           <button
@@ -122,24 +67,37 @@ const JeeTestPage = () => {
             {selectedExam} - Select Test Type
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {jeeTests[selectedExam].map((test) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {selectedExamTests.map((test) => (
               <div
-                key={test.type}
+                key={test._id}
                 className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300"
               >
                 <div className="bg-purple-100 rounded-full p-5 mb-4 flex items-center justify-center w-20 h-20">
-                  <img src={test.icon} alt={test.type} className="w-12 h-12" />
+                  <img
+                    src="https://img.icons8.com/color/48/quiz.png"
+                    alt="icon"
+                    className="w-12 h-12"
+                  />
                 </div>
+
                 <p className="text-center font-semibold text-gray-800 mb-1">
-                  {test.type}
+                  {test.title}
                 </p>
-                <p className="text-sm text-gray-500 mb-1">Duration: {test.duration}</p>
-                <p className="text-sm text-gray-500 mb-2">Questions: {test.questions}</p>
-                <p className="text-xs text-gray-400 text-center">{test.description}</p>
-                <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full transition-colors duration-300">
-                  Start Test
-                </button>
+
+                <p className="text-sm text-gray-500 mb-1">
+                  Duration: {test.duration || "60 min"}
+                </p>
+
+                <p className="text-sm text-gray-500 mb-2">
+                  Questions: {test.questions?.length}
+                </p>
+
+                <Link to={`/test/${test._id}`}>
+                  <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full transition-colors duration-300">
+                    Start Test
+                  </button>
+                </Link>
               </div>
             ))}
           </div>

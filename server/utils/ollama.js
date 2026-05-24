@@ -1,48 +1,69 @@
-const axios = require('axios');
-require('dotenv').config();
+import axios from "axios";
 
-const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
-const MODEL = process.env.OLLAMA_MODEL || 'gemma-3-q4-12b';
-const TIMEOUT = 120000;
+const OLLAMA_URL = "http://localhost:11434";
+const OLLAMA_MODEL = "gemma:2b";
 
-async function generateWithOllamaRaw(prompt, max_tokens = 1200) {
-  // This uses hypothetical /v1/generate; adapt to your Ollama version (or use CLI)
-  try {
-    const payload = {
-      model: MODEL,
-      prompt,
-      max_tokens
-    };
-    const resp = await axios.post(`${OLLAMA_HOST}/v1/generate`, payload, { timeout: TIMEOUT });
-    return resp.data;
-  } catch (err) {
-    // Try CLI fallback not implemented here
-    throw err;
-  }
-}
-
-/**
- * Strong prompt wrapper for test generation using RAG context
- */
-async function generateTestUsingRAG({ exam, category, state, pyqsContext = [], numQ = 10, isFullTest = false }) {
-  const ctx = pyqsContext.slice(0, 12).map((c, i) => `--- Context ${i+1} ---\n${c}`).join('\n\n');
-
+export async function generateTestUsingRAG({
+  exam,
+  category,
+  state,
+  subject,
+  numQ,
+  isFullTest,
+}) {
   const prompt = `
-You are an expert exam generator. Create ${numQ} high-quality ${isFullTest ? 'full-length' : 'mock'} MCQs for the exam "${exam}" (${category}) ${state ? '- ' + state : ''}.
-Each question must have 4 options and the correct answer should be clearly specified. Add a 1-2 line explanation for each.
-Use the following context from previous year questions/patterns to preserve style:
-${ctx}
+You MUST output ONLY valid JSON.
+NO text before or after JSON.
+If you cannot output valid JSON, output: []
 
-Return only a valid JSON array like:
+Generate exactly ${numQ} MCQs.
+
+Return strict JSON array:
 [
-  {"question":"...","options":["A","B","C","D"],"answer":"A","explanation":"..."},
-  ...
+  {
+    "question": "string",
+    "options": ["A","B","C","D"],
+    "answer": "A/B/C/D",
+    "explanation": "string",
+    "difficulty": "easy"
+  }
 ]
+
+Exam: ${exam}
+Category: ${category}
+State: ${state}
+Subject: ${subject}
+Test Type: ${isFullTest ? "Full Test" : "Half Test"}
 `;
 
-  const res = await generateWithOllamaRaw(prompt, 1500);
-  return res;
+  const res = await axios.post(
+    `${OLLAMA_URL}/api/generate`,
+    {
+      model: OLLAMA_MODEL,
+      prompt,
+      stream: false,
+    },
+    { timeout: 120000 }
+  );
+
+  const txt = res.data.response || res.data.output || JSON.stringify(res.data);
+
+  let parsed = null;
+
+  try {
+    // Extract JSON array from text carefully
+    const start = txt.indexOf("[");
+    const end = txt.lastIndexOf("]");
+    if (start !== -1 && end !== -1 && end > start) {
+      const jsonString = txt.slice(start, end + 1);
+      parsed = JSON.parse(jsonString);
+    } else {
+      parsed = [];
+    }
+  } catch (err) {
+    console.error("JSON PARSE ERROR:", err.message);
+    parsed = [];
+  }
+
+  return { raw: txt, json: parsed };
 }
-
-module.exports = { generateWithOllamaRaw, generateTestUsingRAG };
-

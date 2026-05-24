@@ -1,88 +1,110 @@
-const Test = require('../models/Test');
-const PYQ = require('../models/PYQ');
-const { generateTestUsingRAG } = require('../utils/ollama');
+// controllers/TestController.js
+import Test from "../models/Test.js";
+import { generateTestUsingRAG } from "../utils/ollama.js";
 
-// Simple retrieval: best-effort fetch of raw text from Mongo (replace with vector DB)
-async function retrieveRelevantPYQs({ exam, state, limit = 30 }) {
-  const filter = {};
-  if (exam) filter.exam = exam;
-  if (state) filter.state = state;
-  const docs = await PYQ.find(filter).sort({ createdAt: -1 }).limit(limit);
-  return docs.map(d => d.rawText || (d.questions?.map(q => q.question).join('\n') || ''));
-}
-
-exports.createTest = async (req, res) => {
+// Create a new test by generating questions using AI (RAG)
+export const createTest = async (req, res) => {
   try {
-    const { category, exam, state, numQuestions, isFullTest } = req.body;
+    const { category, exam, state, subject, numQuestions, isFullTest } = req.body;
+
     if (!category || !exam || !numQuestions) {
-      return res.status(400).json({ message: 'category, exam and numQuestions required' });
+      return res.status(400).json({ message: "Required fields missing" });
     }
 
-    // RAG retrieval
-    const contexts = await retrieveRelevantPYQs({ exam, state, limit: 30 });
-    // Generate via Ollama
-    const rawGen = await generateTestUsingRAG({
-      exam, category, state, pyqsContext: contexts, numQ: Number(numQuestions), isFullTest: !!isFullTest
+    const generatedResult = await generateTestUsingRAG({
+      exam,
+      category,
+      state,
+      subject,
+      numQ: numQuestions,
+      isFullTest,
     });
 
-    // Parse response: try extracting JSON array
-    let questionsArray = [];
-    try {
-      // Many LLM outputs embed JSON in text. Try to find first '[' and parse.
-      const text = (rawGen?.output?.[0]?.content) || rawGen?.text || JSON.stringify(rawGen);
-      const start = text.indexOf('[');
-      const jsonText = start >= 0 ? text.slice(start) : text;
-      questionsArray = JSON.parse(jsonText);
-    } catch (err) {
-      // fallback: attempt to parse loosely or store raw as single question
-      console.warn('Parsing generated output failed:', err.message);
-    }
-
-    let testDoc;
-    if (Array.isArray(questionsArray) && questionsArray.length > 0) {
-      testDoc = new Test({
-        title: `${exam} - ${isFullTest ? 'Full Test' : 'Mock Test'} - ${new Date().toISOString()}`,
-        category, exam, state,
-        isFullTest: !!isFullTest,
-        numQuestions: Number(numQuestions),
-        questions: questionsArray
-      });
-    } else {
-      // Save raw fallback
-      const fallbackText = (rawGen?.output?.[0]?.content) || JSON.stringify(rawGen);
-      testDoc = new Test({
-        title: `${exam} - Generated Raw - ${new Date().toISOString()}`,
-        category, exam, state,
-        isFullTest: !!isFullTest,
-        numQuestions: Number(numQuestions),
-        questions: [{
-          question: fallbackText,
-          options: [],
-          answer: '',
-          explanation: ''
-        }]
+    // SAFETY CHECK: ensure array
+    if (!Array.isArray(generatedResult.json)) {
+      return res.status(500).json({
+        message: "Invalid test format returned by AI",
+        raw: generatedResult.raw,
       });
     }
 
-    await testDoc.save();
-    return res.status(201).json({ message: 'Test generated and saved', test: testDoc });
-  } catch (err) {
-    console.error('createTest error', err?.message || err);
-    return res.status(500).json({ message: 'Server error', error: err.toString() });
+    // SAFETY CHECK: ensure each question is an object with necessary fields
+    const valid = generatedResult.json.every(
+      (q) =>
+        typeof q === "object" &&
+        q.question &&
+        Array.isArray(q.options) &&
+        q.answer
+    );
+
+    if (!valid) {
+      return res.status(500).json({
+        message: "AI returned invalid question format",
+        raw: generatedResult.raw,
+      });
+    }
+
+    const test = new Test({
+      title: `${exam} Mock Test`,
+      category,
+      exam,
+      state,
+      subject,
+      numQuestions,
+      isFullTest,
+      questions: generatedResult.json,
+    });
+
+    await test.save();
+
+    res.status(201).json({
+      message: "Test generated successfully",
+      test,
+    });
+  } catch (error) {
+    console.error("createTest error:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.getTests = async (req, res) => {
+// Get all tests (list)
+export const getTests = async (req, res) => {
   try {
-    const { category, exam, state } = req.query;
-    const filter = {};
-    if (category) filter.category = category;
-    if (exam) filter.exam = exam;
-    if (state) filter.state = state;
-    const tests = await Test.find(filter).sort({ createdAt: -1 }).limit(200);
+    const tests = await Test.find().sort({ createdAt: -1 });
     res.json(tests);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.toString() });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get test by ID with full details (including answers)
+export const getTestById = async (req, res) => {
+  try {
+    const test = await Test.findById(req.params.id);
+    if (!test) return res.status(404).json({ message: "Test not found" });
+    res.json(test);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get test for student (questions + options only, no answers)
+export const getTestForStudent = async (req, res) => {
+  try {
+    const test = await Test.findById(req.params.id);
+    if (!test) return res.status(404).json({ message: "Test not found" });
+
+    const studentTest = {
+      _id: test._id,
+      title: test.title,
+      questions: test.questions.map((q) => ({
+        question: q.question,
+        options: q.options,
+      })),
+    };
+
+    res.json(studentTest);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
