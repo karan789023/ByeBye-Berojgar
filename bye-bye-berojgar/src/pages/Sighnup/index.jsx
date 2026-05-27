@@ -1,104 +1,251 @@
+
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Phone, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { User, Mail, Lock, Sparkles } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
-const Signup = () => {
-  const [formData, setFormData] = useState({ name: "", mobile: "" });
+const SignUp = () => {
 
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // INPUT CHANGE
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = (e) => {
+  // =========================
+  // SIGNUP
+  // =========================
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup data:", formData);
-    alert("Signup successful!");
+
+    // VALIDATION
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/signup",
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }
+      );
+
+      // SAVE USER
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
+
+      alert("Account Created Successfully ✅");
+
+      // REDIRECT
+      navigate("/signin");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        error.response?.data?.message ||
+        "Signup Failed ❌"
+      );
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // GOOGLE LOGIN
+  const handleGoogleSignUp = () => {
+    window.location.href =
+      "http://localhost:5000/api/auth/google";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.3)] p-8 w-full max-w-md text-white"
+    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-4">
+
+      {/* BG EFFECT */}
+      <div className="absolute w-[400px] h-[400px] bg-purple-600 rounded-full blur-[150px] opacity-30 top-[-100px] left-[-100px]" />
+
+      <div className="absolute w-[350px] h-[350px] bg-pink-500 rounded-full blur-[140px] opacity-20 bottom-[-100px] right-[-100px]" />
+
+      {/* CARD */}
+      <form
+        onSubmit={handleSubmit}
+        className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-8"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
-            Welcome to
-          </span>
-        </h1>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-300">
-          ByeBye Berojgar
+
+        {/* LOGO */}
+        <div className="flex justify-center mb-5">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4 rounded-2xl shadow-lg">
+            <Sparkles
+              className="text-white"
+              size={32}
+            />
+          </div>
+        </div>
+
+        {/* TITLE */}
+        <h2 className="text-4xl font-bold text-center text-white mb-2">
+          Create Account
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name Input */}
-          <div>
-            <label className="block mb-1 font-medium text-white/90">
-              Full Name
-            </label>
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-2 focus-within:border-indigo-400 transition">
-              <User size={20} className="mr-2 text-indigo-300" />
-              <input
-                type="text"
-                name="name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                className="bg-transparent w-full outline-none text-white placeholder-white/50"
-              />
-            </div>
+        <p className="text-center text-gray-300 mb-8">
+          Register with Email & Password 🚀
+        </p>
+
+        {/* NAME */}
+        <div className="mb-5">
+          <label className="text-gray-200 text-sm mb-2 block">
+            Full Name
+          </label>
+
+          <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3">
+
+            <User
+              className="text-gray-300 mr-3"
+              size={20}
+            />
+
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              value={formData.name}
+              onChange={handleChange}
+              className="bg-transparent outline-none text-white w-full placeholder:text-gray-400"
+              required
+            />
           </div>
+        </div>
 
-          {/* Mobile Number Input */}
-          <div>
-            <label className="block mb-1 font-medium text-white/90">
-              Mobile Number
-            </label>
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-2 focus-within:border-indigo-400 transition">
-              <Phone size={20} className="mr-2 text-indigo-300" />
-              <input
-                type="tel"
-                name="mobile"
-                pattern="[0-9]{10}"
-                maxLength="10"
-                required
-                value={formData.mobile}
-                onChange={handleChange}
-                placeholder="Enter your 10-digit number"
-                className="bg-transparent w-full outline-none text-white placeholder-white/50"
-              />
-            </div>
+        {/* EMAIL */}
+        <div className="mb-5">
+          <label className="text-gray-200 text-sm mb-2 block">
+            Email
+          </label>
+
+          <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3">
+
+            <Mail
+              className="text-gray-300 mr-3"
+              size={20}
+            />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+              className="bg-transparent outline-none text-white w-full placeholder:text-gray-400"
+              required
+            />
           </div>
+        </div>
 
-          {/* Submit Button */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            className="w-full py-3 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 hover:from-indigo-500 hover:to-pink-500 text-white shadow-lg transition-all"
-          >
-            Create Account
-          </motion.button>
-        </form>
+        {/* PASSWORD */}
+        <div className="mb-6">
+          <label className="text-gray-200 text-sm mb-2 block">
+            Password
+          </label>
 
-        {/* Sign In Link */}
-        <p className="text-center mt-6 text-white/80">
+          <div className="flex items-center bg-white/10 border border-white/20 rounded-xl px-4 py-3">
+
+            <Lock
+              className="text-gray-300 mr-3"
+              size={20}
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Create password"
+              value={formData.password}
+              onChange={handleChange}
+              className="bg-transparent outline-none text-white w-full placeholder:text-gray-400"
+              required
+            />
+          </div>
+        </div>
+
+        {/* BUTTON */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold text-lg"
+        >
+          {loading
+            ? "Creating Account..."
+            : "Sign Up"}
+        </button>
+
+        {/* DIVIDER */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-[1px] bg-white/20"></div>
+
+          <span className="text-gray-300 text-sm">
+            OR
+          </span>
+
+          <div className="flex-1 h-[1px] bg-white/20"></div>
+        </div>
+
+        {/* GOOGLE */}
+        <button
+          type="button"
+          onClick={handleGoogleSignUp}
+          className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 py-3 rounded-xl font-medium"
+        >
+          <FcGoogle size={24} />
+
+          Continue with Google
+        </button>
+
+        {/* FOOTER */}
+        <p className="text-center text-gray-300 text-sm mt-8">
           Already have an account?{" "}
-          <Link
-            to="/signin"
-            className="text-indigo-300 font-semibold hover:underline"
+
+          <a
+            href="/signin"
+            className="text-pink-300 font-semibold"
           >
             Sign In
-          </Link>
+          </a>
         </p>
-      </motion.div>
+
+      </form>
     </div>
   );
 };
 
-export default Signup;
+export default SignUp;
 

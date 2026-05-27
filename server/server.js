@@ -1,7 +1,14 @@
-import express from "express";
+
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import express from "express";
+import session from "express-session";
+import passport from "passport";
+
+import "./config/passport.js";
+
+import authRoutes from "./routes/auth.js";
 
 import testRoutes from "./routes/testRoutes.js";
 
@@ -13,6 +20,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  session({
+    secret: "keyboard",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+
+app.use(passport.session());
+app.use("/api/auth", authRoutes);
 // Routes
 app.use("/api/tests", testRoutes);
 
