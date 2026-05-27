@@ -5,7 +5,7 @@ import Goverment from "./pages/Goverment";
 import Neet from "./pages/Neet";
 import Jee from "./pages/Jee";
 import Analyis from "./pages/Analyis";
-import Skills from "./pages/skills";
+import Skills from "./pages/Skills";
 import Sighnin from "./pages/Sighnin";
 import Sighnup from "./pages/Sighnup";
 import Testpage from "./pages/Testpage";
