@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const API = axios.create({
-  baseURL: "http:// https://byebye-berojgar-7.onrender.com/api/tests",
+  baseURL: "http://localhost:5174/api/tests",
 });
 
 export const createTest = async (data) => {

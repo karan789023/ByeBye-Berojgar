@@ -10,7 +10,7 @@ const JeeTestPage = () => {
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const res = await axios.get("http:// https://byebye-berojgar-7.onrender.com/api/tests?category=JEE");
+        const res = await axios.get("https://byebye-berojgar-7.onrender.com/api/tests?category=JEE");
         setAllTests(res.data);
       } catch (error) {
         console.log("Error fetching JEE tests:", error);
