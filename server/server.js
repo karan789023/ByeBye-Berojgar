@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "https://https://byebye-berojgar-7.onrender.com/",
+  origin: "https://bye-bye-berojgar.vercel.app/",
   credentials: true
 }));
 
