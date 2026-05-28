@@ -18,7 +18,7 @@ const TestPage = () => {
   useEffect(() => {
     const fetchTestData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/tests/${id}/student`);
+        const res = await axios.get(`http:// https://byebye-berojgar-7.onrender.com/api/tests/${id}/student`);
         setTest(res.data);
       } catch (error) {
         console.error("Error loading test:", error);
