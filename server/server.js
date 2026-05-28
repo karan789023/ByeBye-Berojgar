@@ -16,8 +16,11 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://https://byebye-berojgar-7.onrender.com/",
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use(
