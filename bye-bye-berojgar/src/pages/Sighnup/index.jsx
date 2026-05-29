@@ -45,7 +45,7 @@ const SignUp = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "http:// https://byebye-berojgar-7.onrender.com/api/auth/signup",
+        "https://byebye-berojgar-7.onrender.com/api/auth/signup",
         {
           name: formData.name,
           email: formData.email,
@@ -86,7 +86,7 @@ const SignUp = () => {
   // GOOGLE LOGIN
   const handleGoogleSignUp = () => {
     window.location.href =
-      "http:// https://byebye-berojgar-7.onrender.com/api/auth/google";
+      "https://byebye-berojgar-7.onrender.com/api/auth/google";
   };
 
   return (

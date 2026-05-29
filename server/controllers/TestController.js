@@ -29,11 +29,11 @@ export const createTest = async (req, res) => {
     }
 
     // SAFETY CHECK: ensure each question is an object with necessary fields
-   const valid = generatedResult.json.every((q) =>
+const valid = generatedResult.json.every((q) =>
   typeof q === "object" &&
   q.question &&
   Array.isArray(q.options) &&
-  typeof q.correctIndex === "number"
+  q.answer
 );
 
     if (!valid) {
@@ -91,19 +91,42 @@ export const getTestById = async (req, res) => {
 export const getTestForStudent = async (req, res) => {
   try {
     const test = await Test.findById(req.params.id);
-    if (!test) return res.status(404).json({ message: "Test not found" });
+
+    if (!test) {
+      return res.status(404).json({
+        message: "Test not found",
+      });
+    }
 
     const studentTest = {
       _id: test._id,
       title: test.title,
+
       questions: test.questions.map((q) => ({
         question: q.question,
+
         options: q.options,
+
+        // ✅ TEXT ANSWER
+        answer: q.answer,
+
+        // ✅ INDEX ANSWER
+        correctIndex: q.options.findIndex(
+          (op) =>
+            op.trim().toLowerCase() ===
+            q.answer.trim().toLowerCase()
+        ),
+
+        explanation:
+          q.explanation || "No explanation available",
       })),
     };
 
     res.json(studentTest);
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message,
+    });
   }
 };

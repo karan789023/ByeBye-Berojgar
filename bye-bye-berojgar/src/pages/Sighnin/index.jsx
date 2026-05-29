@@ -26,7 +26,7 @@ const SignIn = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("http:// https://byebye-berojgar-7.onrender.com/api/auth/login", {
+      const res = await axios.post("https://byebye-berojgar-7.onrender.com/api/auth/login", {
         email,
         password
       });
@@ -51,7 +51,7 @@ const SignIn = () => {
   // 🔴 GOOGLE LOGIN
   // =========================
   const handleGoogleSignIn = () => {
-    window.location.href = "http:// https://byebye-berojgar-7.onrender.com/api/auth/google";
+    window.location.href = "https://byebye-berojgar-7.onrender.com/api/auth/google";
   };
 
   return (
