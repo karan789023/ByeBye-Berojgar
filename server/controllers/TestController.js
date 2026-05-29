@@ -29,13 +29,12 @@ export const createTest = async (req, res) => {
     }
 
     // SAFETY CHECK: ensure each question is an object with necessary fields
-    const valid = generatedResult.json.every(
-      (q) =>
-        typeof q === "object" &&
-        q.question &&
-        Array.isArray(q.options) &&
-        q.answer
-    );
+   const valid = generatedResult.json.every((q) =>
+  typeof q === "object" &&
+  q.question &&
+  Array.isArray(q.options) &&
+  typeof q.correctIndex === "number"
+);
 
     if (!valid) {
       return res.status(500).json({

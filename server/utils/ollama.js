@@ -14,20 +14,35 @@ export async function generateTestUsingRAG({
   const prompt = `
 You MUST output ONLY valid JSON.
 NO text before or after JSON.
-If you cannot output valid JSON, output: []
+If invalid, output: []
 
 Generate exactly ${numQ} MCQs.
 
 Return strict JSON array:
+
 [
   {
     "question": "string",
-    "options": ["A","B","C","D"],
-    "answer": "A/B/C/D",
+    "options": ["string", "string", "string", "string"],
+
+    "correctIndex": number between 0 and 3,
+
     "explanation": "string",
     "difficulty": "easy"
   }
 ]
+
+RULES:
+- correctIndex must be index of correct option (0-3)
+- DO NOT return A/B/C/D
+- DO NOT return answer text separately
+- options must contain correct answer inside array
+
+RULES:
+- answer must be EXACT copy from options array
+- no A/B/C/D
+- no index numbers
+- no extra formatting
 
 Exam: ${exam}
 Category: ${category}
@@ -46,24 +61,24 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
     { timeout: 120000 }
   );
 
-  const txt = res.data.response || res.data.output || JSON.stringify(res.data);
+  const txt = res.data.response || res.data.output || "";
 
-  let parsed = null;
+  let parsed = [];
 
   try {
-    // Extract JSON array from text carefully
     const start = txt.indexOf("[");
     const end = txt.lastIndexOf("]");
-    if (start !== -1 && end !== -1 && end > start) {
-      const jsonString = txt.slice(start, end + 1);
-      parsed = JSON.parse(jsonString);
-    } else {
-      parsed = [];
+
+    if (start !== -1 && end !== -1) {
+      parsed = JSON.parse(txt.slice(start, end + 1));
     }
   } catch (err) {
     console.error("JSON PARSE ERROR:", err.message);
     parsed = [];
   }
 
-  return { raw: txt, json: parsed };
+  return {
+    raw: txt,
+    json: Array.isArray(parsed) ? parsed : [],
+  };
 }

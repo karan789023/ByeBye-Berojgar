@@ -70,7 +70,7 @@ const NeetTestPage = () => {
             <p className="text-sm text-gray-500 mb-1">Duration: {test.duration}</p>
             <p className="text-sm text-gray-500 mb-2">Questions: {test.questions}</p>
             <p className="text-xs text-gray-400 text-center">{test.description}</p>
-            <Link to="/TestPage">
+            <Link to="/jee">
             <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full transition-colors duration-300">
               Start Test
             </button>

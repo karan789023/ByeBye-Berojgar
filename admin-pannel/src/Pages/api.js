@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const API = axios.create({
-  baseURL: "http://localhost:5174/api/tests",
+  baseURL: "http://localhost:5000/api/tests",
 });
 
 export const createTest = async (data) => {

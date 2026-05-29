@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+
 const JeeTestPage = () => {
   const [allTests, setAllTests] = useState([]);
   const [selectedExam, setSelectedExam] = useState("");
+
+   console.log("ALL TESTS:", allTests); 
 
   // Step 1: Fetch all tests having category "JEE"
   useEffect(() => {
@@ -94,6 +97,7 @@ const JeeTestPage = () => {
                 </p>
 
                 <Link to={`/test/${test._id}`}>
+                
                   <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full transition-colors duration-300">
                     Start Test
                   </button>

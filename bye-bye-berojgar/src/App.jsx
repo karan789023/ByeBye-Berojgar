@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Goverment from "./pages/Goverment";
 import Neet from "./pages/Neet";
 import Jee from "./pages/Jee";
-import Analyis from "./pages/Analyis";
+import Analysis from "./pages/Analysis";
 import Skills from "./pages/Skills";
 import Sighnin from "./pages/Sighnin";
 import Sighnup from "./pages/Sighnup";
@@ -20,7 +20,7 @@ function App() {
         <Route path="Goverment" element={<Goverment />} />
          <Route path="Neet" element={<Neet />} />
          <Route path="Jee" element={<Jee />} />
-         <Route path="Analyis" element={<Analyis />} />
+         <Route path="/Analysis" element={<Analysis />} />
          <Route path="Skills" element={<Skills />} />
          <Route path="Sighnin" element={<Sighnin />} />
          <Route path="Sighnup" element={<Sighnup />} />
