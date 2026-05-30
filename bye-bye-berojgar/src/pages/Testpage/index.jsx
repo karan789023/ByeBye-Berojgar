@@ -14,11 +14,7 @@ const Testpage = () => {
   const [markedReview, setMarkedReview] = useState({});
   const [timeLeft, setTimeLeft] = useState(600);
   const [showSummary, setShowSummary] = useState(false);
-const API_URL = import.meta.env.VITE_API_URL;
-
-const res = await axios.get(
-  `${API_URL}/api/tests/${id}/student`
-);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // ---------------- FETCH TEST ----------------
   useEffect(() => {
