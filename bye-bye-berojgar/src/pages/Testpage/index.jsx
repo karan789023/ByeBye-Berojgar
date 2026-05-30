@@ -3,7 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Testpage = () => {
-    console.log("API URL:", import.meta.env.VITE_API_URL);
+  
+
+console.log("API URL:", API_URL);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
