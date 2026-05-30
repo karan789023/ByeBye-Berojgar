@@ -3,12 +3,13 @@ import axios from "axios";
 const OLLAMA_URL = "http://localhost:11434";
 const OLLAMA_MODEL = "gemma2:2b";
 
-export async function generateTestUsingRAG({
+// ---------------- SINGLE BATCH GENERATOR ----------------
+async function generateBatch({
   exam,
   category,
   state,
   subject,
-  numQ,
+  count,
   isFullTest,
 }) {
 
@@ -16,11 +17,10 @@ export async function generateTestUsingRAG({
 You MUST output ONLY valid JSON.
 NO markdown.
 NO text before or after JSON.
-NO explanations outside JSON.
 
-Generate exactly ${numQ} MCQs.
+Generate exactly ${count} UNIQUE MCQs.
 
-Return STRICT JSON array in this format:
+Return STRICT JSON array:
 
 [
   {
@@ -33,11 +33,10 @@ Return STRICT JSON array in this format:
 ]
 
 RULES:
-- answer MUST be exact text from options array
-- DO NOT use correctIndex
-- DO NOT use A/B/C/D
+- answer MUST exactly match one option
 - options must contain exactly 4 items
-- explanation must be short and accurate
+- explanation must be short
+- no duplicate questions
 - output ONLY JSON array
 
 Exam: ${exam}
@@ -57,16 +56,17 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
         stream: false,
       },
       {
-        timeout: 120000,
+        timeout: 180000,
       }
     );
 
     const txt =
-    console.log("RAW OLLAMA RESPONSE:");
-    console.log(txt);
       res.data.response ||
       res.data.output ||
       "";
+
+    console.log("RAW RESPONSE:");
+    console.log(txt);
 
     let parsed = [];
 
@@ -76,9 +76,11 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
       const end = txt.lastIndexOf("]");
 
       if (start !== -1 && end !== -1) {
+
         parsed = JSON.parse(
           txt.slice(start, end + 1)
         );
+
       }
 
     } catch (err) {
@@ -107,10 +109,7 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
         })
       : [];
 
-    return {
-      raw: txt,
-      json: cleaned,
-    };
+    return cleaned;
 
   } catch (error) {
 
@@ -119,9 +118,72 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
       error.message
     );
 
-    return {
-      raw: "",
-      json: [],
-    };
+    return [];
   }
+}
+
+// ---------------- MAIN FUNCTION ----------------
+export async function generateTestUsingRAG({
+  exam,
+  category,
+  state,
+  subject,
+  numQ,
+  isFullTest,
+}) {
+
+  let finalQuestions = [];
+
+  // GENERATE IN BATCHES
+  while (finalQuestions.length < numQ) {
+
+    const remaining =
+      numQ - finalQuestions.length;
+
+    // 10 QUESTIONS PER REQUEST
+    const batchSize =
+      remaining >= 10 ? 10 : remaining;
+
+    console.log(
+      `Generating batch of ${batchSize}`
+    );
+
+    const batch = await generateBatch({
+      exam,
+      category,
+      state,
+      subject,
+      count: batchSize,
+      isFullTest,
+    });
+
+    finalQuestions = [
+      ...finalQuestions,
+      ...batch,
+    ];
+
+    // REMOVE DUPLICATES
+    finalQuestions = finalQuestions.filter(
+      (q, index, self) =>
+        index ===
+        self.findIndex(
+          (x) => x.question === q.question
+        )
+    );
+
+    console.log(
+      `TOTAL QUESTIONS: ${finalQuestions.length}`
+    );
+  }
+
+  // LIMIT EXACT COUNT
+  finalQuestions = finalQuestions.slice(
+    0,
+    numQ
+  );
+
+  return {
+    raw: "Batch Generated",
+    json: finalQuestions,
+  };
 }

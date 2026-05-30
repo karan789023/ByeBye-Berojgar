@@ -130,3 +130,32 @@ export const getTestForStudent = async (req, res) => {
     });
   }
 };
+
+// DELETE TEST
+export const deleteTest = async (req, res) => {
+
+  try {
+
+    const test = await Test.findByIdAndDelete(
+      req.params.id
+    );
+
+    if (!test) {
+      return res.status(404).json({
+        message: "Test not found",
+      });
+    }
+
+    res.json({
+      message: "Test deleted successfully",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message,
+    });
+
+  }
+
+};
