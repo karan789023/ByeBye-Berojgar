@@ -5,7 +5,7 @@ import axios from "axios";
 const Testpage = () => {
   
 
-console.log("API URL:", API_URL);
+
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ console.log("API URL:", API_URL);
   const [timeLeft, setTimeLeft] = useState(600);
   const [showSummary, setShowSummary] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
+console.log("API URL:", API_URL);
 
   // ---------------- FETCH TEST ----------------
   useEffect(() => {
