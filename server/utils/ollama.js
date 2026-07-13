@@ -1,8 +1,12 @@
 import axios from "axios";
 
-const OLLAMA_URL = "http://localhost:11434";
-const OLLAMA_MODEL = "gemma2:2b";
+import { GoogleGenAI } from "@google/genai";
 
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
+const MODEL = "gemini-2.5-flash";
 // ---------------- SINGLE BATCH GENERATOR ----------------
 async function generateBatch({
   exam,
@@ -48,23 +52,12 @@ Test Type: ${isFullTest ? "Full Test" : "Half Test"}
 
   try {
 
-    const res = await axios.post(
-      `${OLLAMA_URL}/api/generate`,
-      {
-        model: OLLAMA_MODEL,
-        prompt,
-        stream: false,
-      },
-      {
-        timeout: 180000,
-      }
-    );
+     const response = await ai.models.generateContent({
+    model: MODEL,
+    contents: prompt,
+  });
 
-    const txt =
-      res.data.response ||
-      res.data.output ||
-      "";
-
+  const txt = response.text;
     console.log("RAW RESPONSE:");
     console.log(txt);
 

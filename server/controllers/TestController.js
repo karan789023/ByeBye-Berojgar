@@ -66,13 +66,32 @@ const valid = generatedResult.json.every((q) =>
   }
 };
 
-// Get all tests (list)
 export const getTests = async (req, res) => {
   try {
-    const tests = await Test.find().sort({ createdAt: -1 });
+    const { category, exam, state } = req.query;
+
+    const filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (exam) {
+      filter.exam = exam;
+    }
+
+    if (state) {
+      filter.state = state;
+    }
+
+    const tests = await Test.find(filter)
+      .sort({ createdAt: -1 });
+
     res.json(tests);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: error.message,
+    });
   }
 };
 
