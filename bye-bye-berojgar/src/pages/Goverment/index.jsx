@@ -55,29 +55,34 @@ const ExamPage = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedTestType, setSelectedTestType] = useState("");
   const [search, setSearch] = useState("");
-  
-  // नए जेनरेटेड एग्जाम्स को स्टोर करने के लिए स्टेट
+
+  // Live exam names
   const [liveExams, setLiveExams] = useState([]);
+
+  // Complete test objects from API
+  const [allTests, setAllTests] = useState([]);
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   // ---------------- FETCH LIVE EXAMS ----------------
   useEffect(() => {
-    const fetchLiveExams = async () => {   
+    const fetchLiveExams = async () => {
       try {
-        // यहाँ हम डेटाबेस से सारे टेस्ट मंगा रहे हैं (आप अपनी API का राउट चेक कर लें)
-const res = await axios.get(
-  `${API_URL}/api/tests?category=Government`
-);
+        const res = await axios.get(
+          `${API_URL}/api/tests?category=Government`
+        );
 
+        // Store full test data
+        setAllTests(res.data || []);
 
-        
-        // डेटाबेस के रिस्पॉन्स में से सिर्फ एग्जाम के नाम (examName) निकालकर उनका एक Unique Set बना रहे हैं
-        // मान लीजिए आपके बैकएंड से आने वाले डेटा में 'examName' या 'title' फील्ड है
-      const uniqueLiveExams = Array.from(
-  new Set(res.data.map(test => test.exam))
-).filter(Boolean);
-
-
+        // Extract unique exam names
+        const uniqueLiveExams = [
+          ...new Set(
+            (res.data || [])
+              .map((test) => test.exam)
+              .filter(Boolean)
+          ),
+        ];
 
         setLiveExams(uniqueLiveExams);
       } catch (error) {
@@ -89,17 +94,18 @@ const res = await axios.get(
   }, [API_URL]);
 
   // ---------------- MERGE STATIC & LIVE EXAMS ----------------
-  // अगर कोई स्टेट सिलेक्टेड है, तो सिर्फ उसके एग्जाम दिखाएं, वरना डमी + लाइव दोनों दिखाएं
-  const baseExams = selectedState ? stateExams[selectedState] || [] : staticExams;
-  
-  // डुप्लीकेट्स हटाने के लिए Set का इस्तेमाल कर रहे हैं ताकि जो लाइव एग्जाम डमी में भी हो वो दो बार ना दिखे
-  const combinedExams = Array.from(new Set([...liveExams, ...baseExams]));
+  const baseExams = selectedState
+    ? stateExams[selectedState] || []
+    : staticExams;
 
-  // सर्च फिल्टर
+  const combinedExams = Array.from(
+    new Set([...liveExams, ...baseExams])
+  );
+
+  // ---------------- SEARCH FILTER ----------------
   const filteredExams = combinedExams.filter((exam) =>
     exam.toLowerCase().includes(search.toLowerCase())
   );
-
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -122,6 +128,7 @@ const res = await axios.get(
             {type}
           </button>
         ))}
+
         <button
           onClick={() => setSelectedTestType("")}
           className="inline-block mr-3 px-4 py-2 rounded-full border bg-gray-100 text-gray-700 hover:bg-gray-300 transition-colors"
@@ -130,7 +137,7 @@ const res = await axios.get(
         </button>
       </div>
 
-      {/* State/UT Dropdown */}
+      {/* State Dropdown */}
       <div className="flex justify-center mb-6">
         <select
           className="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -138,6 +145,7 @@ const res = await axios.get(
           onChange={(e) => setSelectedState(e.target.value)}
         >
           <option value="">-- Select State or UT (Optional) --</option>
+
           {Object.keys(stateExams).map((state) => (
             <option key={state} value={state}>
               {state}
@@ -146,7 +154,7 @@ const res = await axios.get(
         </select>
       </div>
 
-      {/* Search Box */}
+      {/* Search */}
       <div className="flex justify-center mb-6">
         <input
           type="text"
@@ -160,23 +168,26 @@ const res = await axios.get(
       {/* Exam Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredExams.length > 0 ? (
-          filteredExams.map((exam, index) => {
-            // लाइव एग्जाम्स को थोड़ा अलग दिखाने के लिए आप कोई टैग भी लगा सकते हैं
+          filteredExams.map((exam) => {
             const isLive = liveExams.includes(exam);
 
-const firstTest = allTests.find(
-  (t) => t.exam === exam
-);
+            const firstTest = allTests.find(
+              (test) => test.exam === exam
+            );
 
             return (
               <Link
-               to={firstTest ? `/test/${firstTest._id}` : "#"}
-                state={{ 
-                  examName: exam, 
-                  testType: selectedTestType 
-                }}
                 key={exam}
-                className={`bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 cursor-pointer border-t-4 ${isLive ? 'border-green-500' : 'border-blue-100'}`}
+                to={firstTest ? `/test/${firstTest._id}` : "#"}
+                state={{
+                  examName: exam,
+                  testType: selectedTestType,
+                }}
+                className={`bg-white shadow-lg rounded-xl p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 cursor-pointer border-t-4 ${
+                  isLive
+                    ? "border-green-500"
+                    : "border-blue-100"
+                }`}
               >
                 <div className="bg-blue-100 rounded-full p-4 mb-4 flex items-center justify-center w-16 h-16 relative">
                   <img
@@ -184,19 +195,22 @@ const firstTest = allTests.find(
                     alt={exam}
                     className="w-10 h-10 object-contain"
                   />
-                  {/* अगर एग्जाम लाइव है तो एक छोटा सा बैज दिखाएं */}
+
                   {isLive && (
                     <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
                       Live
                     </span>
                   )}
                 </div>
-                
+
                 <p className="text-center font-medium text-gray-800 mb-2">
                   {exam}
                 </p>
+
                 <p className="text-sm text-gray-500">
-                  {isLive ? 'Latest tests available' : 'Practice tests'}
+                  {isLive
+                    ? "Latest tests available"
+                    : "Practice tests"}
                 </p>
 
                 {selectedTestType && (
