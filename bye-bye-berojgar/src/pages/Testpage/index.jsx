@@ -16,7 +16,7 @@ const Testpage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [markedReview, setMarkedReview] = useState({});
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(25*60);
   const [showSummary, setShowSummary] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
 console.log("API URL:", API_URL);
@@ -41,19 +41,20 @@ console.log("API URL:", API_URL);
   }, [id]);
 
   // ---------------- TIMER ----------------
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      handleFinishTest();
-      return;
-    }
+ useEffect(() => {
+  if (!test) return; // Test load होने तक timer मत चलाओ
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+  if (timeLeft <= 0) {
+    handleFinishTest();
+    return;
+  }
 
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+  const timer = setTimeout(() => {
+    setTimeLeft((prev) => prev - 1);
+  }, 1000);
 
+  return () => clearTimeout(timer);
+}, [timeLeft, test]);
   // ---------------- FINISH TEST ----------------
   const handleFinishTest = () => {
     navigate("/Analysis", {
@@ -86,6 +87,13 @@ console.log("API URL:", API_URL);
   }
 
   const questions = test.questions || [];
+  const totalQuestions = questions.length;
+
+let totalTime = 25 * 60;
+
+if (totalQuestions > 30) {
+  totalTime = 45 * 60;
+}
   const currentQ = questions[currentQuestion];
 
   // ---------------- SELECT OPTION ----------------

@@ -10,6 +10,7 @@ import Sighnin from "./pages/Sighnin";
 import Sighnup from "./pages/Sighnup";
 import Testpage from "./pages/Testpage";
 import Govt from "./pages/Govt";
+import GovernmentTests from "./pages/GovernmentTests/GovernmentTests";
 
 
 function App() {
@@ -25,8 +26,11 @@ function App() {
          <Route path="Sighnin" element={<Sighnin />} />
          <Route path="Sighnup" element={<Sighnup />} />
          <Route path="/test/:id" element={<Testpage />} />
+     
+
 
          <Route path="Govt" element={<Govt />} />
+           <Route path="/government-tests" element={<GovernmentTests />} />
       </Routes>
     </Router>
   );

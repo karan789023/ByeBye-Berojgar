@@ -32,7 +32,7 @@ const stateExams = {
   "Tamil Nadu": ["TNPSC Group 1 Exam", "TNPSC Group 2 Exam", "Tamil Nadu Police SI/Constable Exam", "Tamil Nadu TET"],
   "Telangana": ["TSPSC Group 1 Exam", "TSPSC Group 2 Exam", "Telangana Police SI/Constable Exam", "Telangana TET"],
   "Tripura": ["Tripura PSC Group 1 Exam", "Tripura PSC Group 2 Exam", "Tripura Police SI/Constable Exam", "Tripura TET"],
-  "Uttar Pradesh": ["UPPSC Group 1 Exam", "UPPSC Group 2 Exam", "UP Police SI/Constable Exam", "UP TET", "SSC MTS", "RRB Railway", "SSC GD", "SSC GD Constable", "SSC Selection Post", "SSC Stenographer"],
+  "Uttar Pradesh": ["UPPSC Group 1 Exam", "UPPSC Group 2 Exam", "UP Police SI/Constable Exam", "UP TET", "SSC MTS", "RRB Railway", "SSC GD", "SSC GD Constable","UP SI", "SSC Selection Post", "SSC Stenographer"],
   "Uttarakhand": ["UKPSC Group 1 Exam", "UKPSC Group 2 Exam", "Uttarakhand Police SI/Constable Exam", "Uttarakhand TET"],
   "West Bengal": ["WBPSC Group 1 Exam", "WBPSC Group 2 Exam", "West Bengal Police SI/Constable Exam", "West Bengal TET"],
   "Delhi (NCT of Delhi)": ["Delhi Police Constable/SI Exam", "Delhi TET", "DSSSB Exam", "CAPF Recruitment Exam"],
@@ -55,8 +55,13 @@ const ExamPage = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedTestType, setSelectedTestType] = useState("");
   const [search, setSearch] = useState("");
+<<<<<<< HEAD
 
   // Live exam names
+=======
+  const [allTests, setAllTests] = useState([]);
+  // नए जेनरेटेड एग्जाम्स को स्टोर करने के लिए स्टेट
+>>>>>>> 218a764 (Initial commit)
   const [liveExams, setLiveExams] = useState([]);
 
   // Complete test objects from API
@@ -68,9 +73,26 @@ const ExamPage = () => {
   useEffect(() => {
     const fetchLiveExams = async () => {
       try {
+<<<<<<< HEAD
         const res = await axios.get(
           `${API_URL}/api/tests?category=Government`
         );
+=======
+        // यहाँ हम डेटाबेस से सारे टेस्ट मंगा रहे हैं (आप अपनी API का राउट चेक कर लें)
+const res = await axios.get(
+  `${API_URL}/api/tests?category=Government`
+);
+
+setAllTests(res.data); 
+
+
+        
+        // डेटाबेस के रिस्पॉन्स में से सिर्फ एग्जाम के नाम (examName) निकालकर उनका एक Unique Set बना रहे हैं
+        // मान लीजिए आपके बैकएंड से आने वाले डेटा में 'examName' या 'title' फील्ड है
+      const uniqueLiveExams = Array.from(
+  new Set(res.data.map(test => test.exam))
+).filter(Boolean);
+>>>>>>> 218a764 (Initial commit)
 
         // Store full test data
         setAllTests(res.data || []);
@@ -94,6 +116,7 @@ const ExamPage = () => {
   }, [API_URL]);
 
   // ---------------- MERGE STATIC & LIVE EXAMS ----------------
+<<<<<<< HEAD
   const baseExams = selectedState
     ? stateExams[selectedState] || []
     : staticExams;
@@ -103,6 +126,15 @@ const ExamPage = () => {
   );
 
   // ---------------- SEARCH FILTER ----------------
+=======
+  // अगर कोई स्टेट सिलेक्टेड है, तो सिर्फ उसके एग्जाम दिखाएं, वरना डमी + लाइव दोनों दिखाएं
+  const baseExams = selectedState ? stateExams[selectedState] || [] : staticExams;
+  
+  // डुप्लीकेट्स हटाने के लिए Set का इस्तेमाल कर रहे हैं ताकि जो लाइव एग्जाम डमी में भी हो वो दो बार ना दिखे
+  const combinedExams = Array.from(new Set([...liveExams, ...baseExams]));
+  
+  // सर्च फिल्टर
+>>>>>>> 218a764 (Initial commit)
   const filteredExams = combinedExams.filter((exam) =>
     exam.toLowerCase().includes(search.toLowerCase())
   );
@@ -177,6 +209,14 @@ const ExamPage = () => {
 
             return (
               <Link
+<<<<<<< HEAD
+=======
+               to={`/government-tests`}
+                state={{ 
+                  examName: exam, 
+                  testType: selectedTestType 
+                }}
+>>>>>>> 218a764 (Initial commit)
                 key={exam}
                 to={firstTest ? `/test/${firstTest._id}` : "#"}
                 state={{

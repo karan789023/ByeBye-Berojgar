@@ -17,37 +17,138 @@ async function generateBatch({
   isFullTest,
 }) {
 
-  const prompt = `
-You MUST output ONLY valid JSON.
-NO markdown.
-NO text before or after JSON.
+const prompt = `
+IMPORTANT:
 
-Generate exactly ${count} UNIQUE MCQs.
+- You MUST output ONLY valid JSON.
+- Do NOT use markdown.
+- Do NOT write any text before or after the JSON.
+- Do NOT wrap the JSON inside code fences.
+- The response MUST start with "[" and end with "]".
 
-Return STRICT JSON array:
+LANGUAGE RULES (STRICT):
+
+- Generate the ENTIRE response ONLY in English.
+- Every question MUST be in English.
+- Every option MUST be in English.
+- Every explanation MUST be in English.
+- Never use Hindi, Hinglish, or any other language.
+- Use clear, grammatically correct English.
+
+You are a senior competitive examination paper setter with expertise in creating high-quality government competitive examination papers.
+
+Generate exactly ${count} UNIQUE, HIGH-QUALITY MCQs.
+
+Exam Details:
+
+- Exam: ${exam}
+- Category: ${category}
+- State: ${state}
+- Subject: ${subject}
+- Test Type: ${isFullTest ? "Full Test" : "Half Test"}
+
+INSTRUCTIONS
+
+1. Follow the latest official syllabus and latest exam pattern of ${exam}.
+
+2. Generate ONLY exam-oriented questions from the official syllabus of ${subject}.
+
+3. Questions must closely resemble the style, language, and difficulty of recent official examinations.
+
+4. Do NOT generate:
+- School-level questions
+- Basic textbook definitions
+- Trivia
+- General knowledge outside the syllabus
+- Repeated concepts
+
+5. Every question should require one or more of the following:
+
+- Conceptual understanding
+- Analytical thinking
+- Logical reasoning
+- Careful option elimination
+- Multi-step problem solving
+- Application of concepts
+
+6. Difficulty Distribution:
+
+- Easy: 10%
+- Medium: 40%
+- Hard: 50%
+
+The paper should be challenging enough that only well-prepared candidates can score above 60%.
+
+7. Wrong options must be realistic, believable, and confusing.
+
+Avoid:
+- Obviously wrong answers
+- Joke options
+- Extremely short options
+- Options with different lengths revealing the answer
+
+8. Ensure diversity.
+
+Never repeat:
+
+- Questions
+- Concepts
+- Topics
+- Facts
+- Numbers
+- Statements
+- Options
+- Correct answers
+
+9. Explanations must:
+
+- Be short
+- Be factually correct
+- Clearly explain why the correct answer is correct
+- Be written in English only
+
+10. Answers:
+
+- Exactly one correct answer.
+- Correct answer MUST exactly match one option.
+- Do NOT mention option letters (A/B/C/D) inside the answer.
+
+Return ONLY this JSON array:
 
 [
   {
-    "question": "What is the atomic number of hydrogen?",
-    "options": ["1", "2", "3", "4"],
-    "answer": "1",
-    "explanation": "Hydrogen has atomic number 1.",
+    "question": "Question text",
+    "options": [
+      "Option 1",
+      "Option 2",
+      "Option 3",
+      "Option 4"
+    ],
+    "answer": "Exact option text",
+    "explanation": "Short explanation.",
     "difficulty": "easy"
   }
 ]
 
 RULES:
-- answer MUST exactly match one option
-- options must contain exactly 4 items
-- explanation must be short
-- no duplicate questions
-- output ONLY JSON array
 
-Exam: ${exam}
-Category: ${category}
-State: ${state}
-Subject: ${subject}
-Test Type: ${isFullTest ? "Full Test" : "Half Test"}
+- Return exactly ${count} questions.
+- Every question must contain exactly 4 options.
+- Every question must have exactly one correct answer.
+- The answer MUST exactly match one of the options.
+- Difficulty must be one of:
+  - easy
+  - medium
+  - hard
+- No duplicate questions.
+- No duplicate options.
+- No duplicate explanations.
+- No numbering before questions.
+- No markdown.
+- No comments.
+- No extra keys.
+- No trailing commas.
+- Output ONLY valid JSON.
 `;
 
   try {

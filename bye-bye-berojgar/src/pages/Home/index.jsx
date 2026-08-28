@@ -114,18 +114,7 @@ export default function ByeByeBerojgarHome() {
               />
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
             </div>
-            <div className="flex items-center gap-2">
-              
-         <Link
-  to="/sighnin"
-  className="px-4 py-2 rounded-lg bg-sky-600 text-white font-medium shadow hover:brightness-95"
->
-  Sign Up
-</Link>         
-               <Link to="/sighnin">
-              <button className="px-3 py-2 rounded-lg border border-slate-200">Log in</button>
-              </Link>
-            </div>
+            
           </div>
 
           {/* Mobile menu button */}
