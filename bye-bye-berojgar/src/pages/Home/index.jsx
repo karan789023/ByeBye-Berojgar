@@ -29,12 +29,11 @@ export default function ByeByeBerojgarHome() {
     { id: 5, title: "Aptitude Crash Test", type: "Govt", duration: "30 min", score: 50, badge: "Quick" },
   ];
 
-  const stats = [
-    { label: "Students", value: "2.4M+" },
-    { label: "Mock Tests", value: "5.3M+" },
-    { label: "Success Rate", value: "93%" },
-  ];
-
+const stats = [
+  { label: "Practice", value: "Daily" },
+  { label: "Mock Tests", value: "Multiple" },
+  { label: "Learning", value: "Smart" },
+];
   const states = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
