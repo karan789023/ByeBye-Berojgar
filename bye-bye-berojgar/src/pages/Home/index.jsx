@@ -325,16 +325,47 @@ const stats = [
         </section>
 
         {/* Footer */}
-        <footer className="mt-12 py-8 border-t border-slate-200">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-slate-600">© {new Date().getFullYear()} ByeBye Berojgar. All rights reserved.</div>
-            <div className="flex items-center gap-4 text-sm text-slate-600">
-              <div>Privacy</div>
-              <div>Terms</div>
-              <div>Contact</div>
-            </div>
-          </div>
-        </footer>
+       {/* Footer */}
+<footer className="mt-12 py-8 border-t border-slate-200">
+  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+    
+    <div className="text-sm text-slate-600 text-center md:text-left">
+      © {new Date().getFullYear()} ByeBye Berojgar. All rights reserved.
+    </div>
+
+    <div className="flex items-center gap-4 text-sm text-slate-600">
+      
+      <Link
+        to="/PrivacyPolicy"
+        className="hover:text-blue-600 transition-colors"
+      >
+        Privacy
+      </Link>
+
+      <Link
+        to="/Terms"
+        className="hover:text-blue-600 transition-colors"
+      >
+        Terms
+      </Link>
+
+      <Link
+        to="/ContactUs"
+        className="hover:text-blue-600 transition-colors"
+      >
+        Contact
+      </Link>
+
+      <Link
+        to="/AboutUs"
+        className="hover:text-blue-600 transition-colors"
+      >
+        About Us
+      </Link>
+
+    </div>
+  </div>
+</footer>
       </main>
     </div>
   );

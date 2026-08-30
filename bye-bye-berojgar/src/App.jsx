@@ -11,8 +11,10 @@ import Sighnup from "./pages/Sighnup";
 import Testpage from "./pages/Testpage";
 import Govt from "./pages/Govt";
 import GovernmentTests from "./pages/GovernmentTests/GovernmentTests";
-
-
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
+import Terms from "./pages/Terms";
 function App() {
   return (
     <Router>
@@ -21,6 +23,10 @@ function App() {
         <Route path="Goverment" element={<Goverment />} />
          <Route path="Neet" element={<Neet />} />
          <Route path="Jee" element={<Jee />} />
+         <Route path="Terms" element={<Terms />} />
+         <Route path="ContactUs" element={<ContactUs />} />
+         <Route path="AboutUs" element={<AboutUs/>} />
+         <Route path="PrivacyPolicy" element={<PrivacyPolicy />} />
          <Route path="/Analysis" element={<Analysis />} />
          <Route path="Skills" element={<Skills />} />
          <Route path="Sighnin" element={<Sighnin />} />
